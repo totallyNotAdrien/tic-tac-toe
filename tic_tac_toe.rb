@@ -17,11 +17,12 @@ class TicTacToe
     show_board(self.board)
     puts
     until winner?
-      print "Player #{PLAYERS[self.curr_player_index]}'s Turn'\n"
+      print "Player #{PLAYERS[self.curr_player_index]}'s Turn\n"
       puts
       print "Enter a position to make your mark (1-9), or 'position' \n" \
             "or 'pos' to toggle the numbered position display: "
       input = gets.chomp.strip
+      puts
       if input == "position" || input == "pos"
         @show_position = !self.show_position
         show_board(self.board)
@@ -34,6 +35,8 @@ class TicTacToe
           @curr_player_index = (self.curr_player_index + 1) % 2
           show_board(self.board)
         end
+      else
+        show_board(self.board)
       end
     end
   end
@@ -80,18 +83,42 @@ class TicTacToe
       winning_arrangement = check_horizontal_win(flipped_board)
     end
 
-    #diagonal...
+    #diagonal
+    #top left to bottom right
+    unless winning_arrangement
+      arr = [@board[0][0], @board[1][1], @board[2][2]]
+      winning_arrangement = arr if all_valid_and_same(arr)
+    end
 
+    #bottom left to top right
+    unless winning_arrangement
+      arr = [@board[2][0], @board[1][1], @board[0][2]]
+      winning_arrangement = arr if all_valid_and_same(arr)
+    end
+
+    #win or draw
     if winning_arrangement
       puts "#{winning_arrangement[0]} wins!"
+      return true
+    elsif board_full
+      puts "Draw!"
       return true
     end
     false
   end
 
+  def board_full
+    spaces = self.board.flatten
+    spaces.all? { |mark| PLAYERS.include?(mark) }
+  end
+
+  def all_valid_and_same(arr)
+    arr.is_a?(Array) && arr.all? { |mark| PLAYERS.include?(mark) && mark == arr[0] }
+  end
+
   def check_horizontal_win(board_to_check)
     winning_arrangement = board_to_check.select do |row|
-      row.all? { |mark| PLAYERS.include?(mark) && mark == row[0] }
+      all_valid_and_same(row)
     end
 
     unless winning_arrangement.empty?
