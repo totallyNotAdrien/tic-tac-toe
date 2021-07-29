@@ -17,27 +17,12 @@ class TicTacToe
     show_board(self.board)
     puts
     until winner?
-      print "Player #{PLAYERS[self.curr_player_index]}'s Turn\n"
-      puts
-      print "Enter a position to make your mark (1-9), or 'position' \n" \
-            "or 'pos' to toggle the numbered position display: "
+      display_turn_info
+
       input = gets.chomp.strip
       puts
-      if input == "position" || input == "pos"
-        @show_position = !self.show_position
-        show_board(self.board)
-        puts
-        next
-      elsif valid_digit?(input) && valid_position?(pos = input.to_i)
-        row, col = position_to_grid_coords(pos)
-        if row && col
-          @board[row][col] = PLAYERS[self.curr_player_index]
-          @curr_player_index = (self.curr_player_index + 1) % 2
-          show_board(self.board)
-        end
-      else
-        show_board(self.board)
-      end
+
+      handle_input(input)
     end
   end
 
@@ -70,7 +55,57 @@ class TicTacToe
 
   private
 
+  def display_turn_info
+    print "Player #{PLAYERS[self.curr_player_index]}'s Turn\n"
+    puts
+    print "Enter a position to make your mark (1-9), or 'position' \n" \
+          "or 'pos' to toggle the numbered position display: "
+  end
+
+  def handle_input(input)
+    if input == "position" || input == "pos"
+      @show_position = !self.show_position
+      show_board(self.board)
+      puts
+    elsif valid_digit?(input) && valid_position?(position = input.to_i)
+      place_mark(position)
+    else
+      show_board(self.board)
+    end
+  end
+
+  def valid_digit?(char)
+    digit?(char) && char.to_i != 0
+  end
+
+  def digit?(char)
+    char.is_a?(String) && char.length == 1 && char >= "0" && char <= "9"
+  end
+
+  def valid_position?(position)
+    row, col = position_to_grid_coords(position)
+    if row && col
+      val = self.board[row][col]
+      return !PLAYERS.include?(val)
+    end
+    false
+  end
+
+  def position_to_grid_coords(position)
+    if position.is_a?(Integer) && position.between?(1, 9)
+      position -= 1
+      return [position / 3, position % 3]
+    end
+    nil
+  end
+
   def place_mark(position)
+    row, col = position_to_grid_coords(position)
+    if row && col
+      @board[row][col] = PLAYERS[self.curr_player_index]
+      @curr_player_index = (self.curr_player_index + 1) % 2
+      show_board(self.board)
+    end
   end
 
   def winner?
@@ -86,39 +121,30 @@ class TicTacToe
     #diagonal
     #top left to bottom right
     unless winning_arrangement
-      arr = [@board[0][0], @board[1][1], @board[2][2]]
-      winning_arrangement = arr if all_valid_and_same(arr)
+      arr = [self.board[0][0], self.board[1][1], self.board[2][2]]
+      winning_arrangement = arr if all_valid_and_same?(arr)
     end
 
     #bottom left to top right
     unless winning_arrangement
-      arr = [@board[2][0], @board[1][1], @board[0][2]]
-      winning_arrangement = arr if all_valid_and_same(arr)
+      arr = [self.board[2][0], self.board[1][1], self.board[0][2]]
+      winning_arrangement = arr if all_valid_and_same?(arr)
     end
 
     #win or draw
     if winning_arrangement
       puts "#{winning_arrangement[0]} wins!"
       return true
-    elsif board_full
+    elsif board_full?
       puts "Draw!"
       return true
     end
     false
   end
 
-  def board_full
-    spaces = self.board.flatten
-    spaces.all? { |mark| PLAYERS.include?(mark) }
-  end
-
-  def all_valid_and_same(arr)
-    arr.is_a?(Array) && arr.all? { |mark| PLAYERS.include?(mark) && mark == arr[0] }
-  end
-
   def check_horizontal_win(board_to_check)
     winning_arrangement = board_to_check.select do |row|
-      all_valid_and_same(row)
+      all_valid_and_same?(row)
     end
 
     unless winning_arrangement.empty?
@@ -136,29 +162,8 @@ class TicTacToe
     nil
   end
 
-  def digit?(char)
-    char.is_a?(String) && char.length == 1 && char >= "0" && char <= "9"
-  end
-
-  def valid_digit?(char)
-    digit?(char) && char.to_i != 0
-  end
-
-  def valid_position?(pos)
-    row, col = position_to_grid_coords(pos)
-    if row && col
-      val = self.board[row][col]
-      return !PLAYERS.include?(val)
-    end
-    false
-  end
-
-  def position_to_grid_coords(position)
-    if position.is_a?(Integer) && position.between?(1, 9)
-      position -= 1
-      return [position / 3, position % 3]
-    end
-    nil
+  def all_valid_and_same?(arr)
+    arr.is_a?(Array) && arr.all? { |mark| PLAYERS.include?(mark) && mark == arr[0] }
   end
 
   def row_col_flipped_board
@@ -170,8 +175,12 @@ class TicTacToe
     end
     flipped_board
   end
+
+  def board_full?
+    spaces = self.board.flatten
+    spaces.all? { |mark| PLAYERS.include?(mark) }
+  end
 end
 
 game = TicTacToe.new
-
 game.play
