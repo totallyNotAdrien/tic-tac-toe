@@ -53,15 +53,6 @@ class TicTacToe
     puts
   end
 
-  private
-
-  def display_turn_info
-    print "Player #{PLAYERS[self.curr_player_index]}'s Turn\n"
-    puts
-    print "Enter a position to make your mark (1-9), or 'position' \n" \
-          "or 'pos' to toggle the numbered position display: "
-  end
-
   def handle_input(input)
     if input == "position" || input == "pos"
       @show_position = !self.show_position
@@ -180,7 +171,16 @@ class TicTacToe
     spaces = self.board.flatten
     spaces.all? { |mark| PLAYERS.include?(mark) }
   end
+
+  private
+
+  def display_turn_info
+    print "Player #{PLAYERS[self.curr_player_index]}'s Turn\n"
+    puts
+    print "Enter a position to make your mark (1-9), or 'position' \n" \
+          "or 'pos' to toggle the numbered position display: "
+  end
 end
 
-game = TicTacToe.new
-game.play
+# game = TicTacToe.new
+# game.play
