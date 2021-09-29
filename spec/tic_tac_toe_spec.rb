@@ -79,4 +79,39 @@ describe TicTacToe do
       #it can't be a valid position. valid_digit? must come before valid_position?
     end
   end
+
+  describe "#valid_digit?" do
+    subject(:game_valid_digit) {described_class.new}
+
+    context "when char is digit" do
+      before do
+        allow(game_valid_digit).to receive(:digit?).and_return(true)
+      end
+
+      context "when char is not '0'" do
+        it "returns true" do
+          char = "5"
+          expect(game_valid_digit).to be_valid_digit(char)
+        end
+      end
+
+      context "when char is '0'" do
+        it "returns false" do
+          char = "0"
+          expect(game_valid_digit).not_to be_valid_digit(char)
+        end
+      end
+    end
+
+    context "when char is not digit" do
+      before do
+        allow(game_valid_digit).to receive(:digit?).and_return(false)
+      end
+
+      it "returns false" do
+        char = "milk"
+        expect(game_valid_digit).not_to be_valid_digit(char)
+      end
+    end
+  end
 end
