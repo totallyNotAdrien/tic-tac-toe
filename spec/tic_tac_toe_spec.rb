@@ -145,4 +145,39 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#valid_position?" do
+    subject(:game_position) {described_class.new}
+
+    context "when position is in bounds" do
+      let(:position) {4}
+
+      context "when position is available" do
+        it "returns true" do
+          board = game_position.board
+          board[0][0] = "X"
+          board[1][1] = "O"
+          #game_position.show_board(game_position.board)
+          expect(game_position).to be_valid_position(position)
+        end
+      end
+
+      context "when position is already taken" do
+        it "returns false" do
+          board = game_position.board
+          board[0][0] = "X"
+          board[1][0] = "O"
+          #game_position.show_board(game_position.board)
+          expect(game_position).not_to be_valid_position(position)
+        end
+      end
+    end
+
+    context "when position is out of bounds" do
+      it "returns false" do
+        position = 10
+        expect(game_position).not_to be_valid_position(position)
+      end
+    end
+  end
 end
