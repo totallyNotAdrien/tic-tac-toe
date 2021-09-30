@@ -114,4 +114,35 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#digit?" do
+    subject(:game_digit) {described_class.new}
+    context "when char is a single-character string between '0' and '9'" do
+      it "returns true" do
+        char = "7"
+        expect(game_digit).to be_digit(char)
+      end
+    end
+
+    context "when char is not a string" do
+      it "returns false" do 
+        char = 7
+        expect(game_digit).not_to be_digit(char)
+      end
+    end
+
+    context "when char is not a single character" do 
+      it "returns false" do
+        char = "77"
+        expect(game_digit).not_to be_digit(char)
+      end
+    end
+
+    context "when char is not between '0' and '9'" do
+      it "returns false" do
+        char = "T"
+        expect(game_digit).not_to be_digit(char)
+      end
+    end
+  end
 end
