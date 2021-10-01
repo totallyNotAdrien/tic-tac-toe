@@ -180,4 +180,45 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#position_to_grid_coords" do
+    subject(:game_coords) {described_class.new}
+
+    context "when position is an integer between 1 and 9" do
+      context "when position is 4" do
+        it "returns [1,0]" do
+          position = 4
+          expect(game_coords.position_to_grid_coords(position)).to eql([1,0])
+        end
+      end
+
+      context "when position is 9" do
+        it "returns [2,2]" do
+          position = 9
+          expect(game_coords.position_to_grid_coords(position)).to eql([2,2])
+        end
+      end
+
+      context "when position is 1" do
+        it "returns [0,0]" do
+          position = 1
+          expect(game_coords.position_to_grid_coords(position)).to eql([0,0])
+        end
+      end
+    end
+
+    context "when position is not an integer" do
+      it "returns nil" do
+        position = 1.0
+        expect(game_coords.position_to_grid_coords(position)).to be_nil
+      end
+    end
+
+    context "when position is not between 1 and 9" do
+      it "returns nil" do
+        position = 10
+        expect(game_coords.position_to_grid_coords(position)).to be_nil
+      end
+    end
+  end
 end
