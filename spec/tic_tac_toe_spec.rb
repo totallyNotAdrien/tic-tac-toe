@@ -221,4 +221,53 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#place_mark" do
+    subject(:game_place) {described_class.new}
+    before do
+      allow(game_place).to receive(:show_board)
+    end
+
+    context "when position is between 1 and 9" do
+      context "when curr player is 'X'" do
+        before do
+          allow(game_place).to receive(:curr_player_index).and_return(0)
+        end
+        context "when position is 4" do
+          it "changes board[1][0] to 'X'" do
+            position = 4
+            expect {game_place.place_mark(position)}.to change {game_place.board[1][0]}.to("X")
+          end
+        end
+      end
+
+      context "when curr player is 'O'" do
+        before do
+          allow(game_place).to receive(:curr_player_index).and_return(1)
+        end
+        context "when position is 8" do
+          it "changes board[2][1] to 'O'" do
+            position = 8
+            expect {game_place.place_mark(position)}.to change {game_place.board[2][1]}.to("O")
+          end
+        end
+      end
+    end
+
+    context "when position is out of bounds" do 
+      context "when position is 0" do
+        it "does not change board" do
+          position = 0
+          expect {game_place.place_mark(position)}.not_to change {game_place.board}
+        end
+      end
+
+      context "when position is 14" do
+        it "does not change board" do
+          position = 14
+          expect {game_place.place_mark(position)}.not_to change {game_place.board}
+        end
+      end
+    end
+  end
 end
