@@ -102,8 +102,8 @@ class TicTacToe
 
   def place_marks(position_arr, start_index = 0)
     return unless position_arr.all? {|pos| pos.is_a?(Integer)}
-    
-    @curr_player_index = start_index
+
+    @curr_player_index = start_index % 2
     position_arr.each do |pos|
       row, col = position_to_grid_coords(pos)
       if row && col

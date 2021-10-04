@@ -1,6 +1,41 @@
 require "../lib/tic_tac_toe.rb"
 
 describe TicTacToe do
+  describe "#place_marks" do
+    subject(:game_marks) {described_class.new}
+
+    context "when position_arr is an array of integers" do
+      context "when position_arr has 4 positions" do
+        let(:positions) {[1,2,5,9]}
+
+        it "calls position_to_grid_coords 4 times" do
+          expect(game_marks).to receive(:position_to_grid_coords).exactly(4).times
+          game_marks.place_marks(positions)
+        end
+
+        it "places 4 marks accordingly" do
+          expect { game_marks.place_marks(positions) }.to change {game_marks.board}.to([["X", "O", " "],[" ", "X", " "],[" ", " ", "O"]])
+        end
+      end
+
+      context "when start_index is 1 (player O)" do
+        let(:positions) {[1,2,5,9]}
+        it "places marks accordingly" do
+          expect { game_marks.place_marks(positions, 1) }.to change {game_marks.board}.to([["O", "X", " "],[" ", "O", " "],[" ", " ", "X"]])
+        end
+      end
+    end
+
+    context "when position_arr is not an array of integers" do
+      let(:positions){["milk", 4, "13", {taco:4}]}
+
+      it "returns nil" do
+        expect(game_marks.place_marks(positions)).to be_nil
+      end
+    end
+  end
+
+
   describe "#handle_input" do
     subject(:game_input){described_class.new}
 
