@@ -5,10 +5,11 @@ class TicTacToe
 
   PLAYERS = ["X", "O"]
 
-  def initialize
+  def initialize(board_setup_arr = [])
     @show_position = true
     @curr_player_index = 0
     @board = Array.new(3) { Array.new(3, " ") }
+    place_marks(board_setup_arr) unless board_setup_arr.empty?
   end
 
   public
@@ -96,6 +97,19 @@ class TicTacToe
       @board[row][col] = PLAYERS[self.curr_player_index]
       @curr_player_index = (self.curr_player_index + 1) % 2
       show_board(self.board)
+    end
+  end
+
+  def place_marks(position_arr, start_index = 0)
+    return unless position_arr.all? {|pos| pos.is_a?(Integer)}
+    
+    @curr_player_index = start_index
+    position_arr.each do |pos|
+      row, col = position_to_grid_coords(pos)
+      if row && col
+        @board[row][col] = PLAYERS[self.curr_player_index]
+        @curr_player_index = (self.curr_player_index + 1) % 2
+      end
     end
   end
 
