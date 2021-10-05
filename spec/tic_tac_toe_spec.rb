@@ -1,39 +1,6 @@
 require "../lib/tic_tac_toe.rb"
 
 describe TicTacToe do
-  describe "#place_marks" do
-    subject(:game_marks) {described_class.new}
-
-    context "when position_arr is an array of integers" do
-      context "when position_arr has 4 positions" do
-        let(:positions) {[1,2,5,9]}
-
-        it "calls position_to_grid_coords 4 times" do
-          expect(game_marks).to receive(:position_to_grid_coords).exactly(4).times
-          game_marks.place_marks(positions)
-        end
-
-        it "places 4 marks accordingly" do
-          expect { game_marks.place_marks(positions) }.to change {game_marks.board}.to([["X", "O", " "],[" ", "X", " "],[" ", " ", "O"]])
-        end
-      end
-
-      context "when start_index is 1 (player O)" do
-        let(:positions) {[1,2,5,9]}
-        it "places marks accordingly" do
-          expect { game_marks.place_marks(positions, 1) }.to change {game_marks.board}.to([["O", "X", " "],[" ", "O", " "],[" ", " ", "X"]])
-        end
-      end
-    end
-
-    context "when position_arr is not an array of integers" do
-      let(:positions){["milk", 4, "13", {taco:4}]}
-
-      it "returns nil" do
-        expect(game_marks.place_marks(positions)).to be_nil
-      end
-    end
-  end
 
 
   describe "#handle_input" do
@@ -301,6 +268,171 @@ describe TicTacToe do
         it "does not change board" do
           position = 14
           expect {game_place.place_mark(position)}.not_to change {game_place.board}
+        end
+      end
+    end
+  end
+
+  describe "#place_marks" do
+    subject(:game_marks) {described_class.new}
+
+    context "when position_arr is an array of integers" do
+      context "when position_arr has 4 positions" do
+        let(:positions) {[1,2,5,9]}
+
+        it "calls position_to_grid_coords 4 times" do
+          expect(game_marks).to receive(:position_to_grid_coords).exactly(4).times
+          game_marks.place_marks(positions)
+        end
+
+        it "places 4 marks accordingly" do
+          expect { game_marks.place_marks(positions) }.to change {game_marks.board}.to([["X", "O", " "],[" ", "X", " "],[" ", " ", "O"]])
+        end
+      end
+
+      context "when start_index is 1 (player O)" do
+        let(:positions) {[1,2,5,9]}
+        it "places marks accordingly" do
+          expect { game_marks.place_marks(positions, 1) }.to change {game_marks.board}.to([["O", "X", " "],[" ", "O", " "],[" ", " ", "X"]])
+        end
+      end
+    end
+
+    context "when position_arr is not an array of integers" do
+      let(:positions){["milk", 4, "13", {taco:4}]}
+
+      it "returns nil" do
+        expect(game_marks.place_marks(positions)).to be_nil
+      end
+    end
+  end
+
+  describe "#winner?" do
+    context "when there are three of the same mark in a row" do
+      context "when the marks are 'X's" do
+        let(:game_winner_row) {described_class.new([1,4,2,5,3])}
+        before do
+          allow(game_winner_row).to receive(:puts)
+          allow(game_winner_row).to receive(:check_horizontal_win).and_return(["X","X","X"])
+        end
+
+        it "displays winner" do
+          expect(game_winner_row).to receive(:puts).with("X wins!")
+          game_winner_row.winner?
+        end
+        it "returns true" do
+          expect(game_winner_row).to be_winner
+        end
+      end
+
+      context "when the marks are 'O's" do
+        let(:game_winner_row) {described_class.new([1,4,7,5,2,6])}
+        before do
+          allow(game_winner_row).to receive(:puts)
+          allow(game_winner_row).to receive(:check_horizontal_win).and_return(["O","O","O"])
+        end
+
+        it "displays winner" do
+          expect(game_winner_row).to receive(:puts).with("O wins!")
+          game_winner_row.winner?
+        end
+        it "returns true" do
+          expect(game_winner_row).to be_winner
+        end
+      end
+    end
+
+    context "when there are three of the same mark in a column" do
+      context "when the marks are 'X's" do
+        let(:game_winner_col) {described_class.new([2,1,5,4,8])}
+        before do
+          allow(game_winner_col).to receive(:puts)
+          allow(game_winner_col).to receive(:check_horizontal_win).and_return(["X","X","X"])
+        end
+
+        it "displays winner" do
+          expect(game_winner_col).to receive(:puts).with("X wins!")
+          game_winner_col.winner?
+        end
+        it "returns true" do
+          expect(game_winner_col).to be_winner
+        end
+      end
+
+      context "when the marks are 'O's" do
+        let(:game_winner_col) {described_class.new([2,3,1,6,5,9])}
+        before do
+          allow(game_winner_col).to receive(:puts)
+          allow(game_winner_col).to receive(:check_horizontal_win).and_return(["O","O","O"])
+        end
+
+        it "displays winner" do
+          expect(game_winner_col).to receive(:puts).with("O wins!")
+          game_winner_col.winner?
+        end
+        it "returns true" do
+          expect(game_winner_col).to be_winner
+        end
+      end
+    end
+
+    context "when there are three of the same mark on a diagonal" do
+      context "when the diagonal is top left to bottom right" do
+        context "when the marks are 'X's" do
+          let(:game_winner_diag) {described_class.new([1,4,5,8,9])}
+          before do
+            allow(game_winner_diag).to receive(:puts)
+            allow(game_winner_diag).to receive(:all_valid_and_same?).and_return(true)
+          end
+
+          it "displays winner" do
+            expect(game_winner_diag).to receive(:puts).with("X wins!")
+            game_winner_diag.winner?
+          end
+          it "returns true" do
+            expect(game_winner_diag).to be_winner
+          end
+        end
+      end
+
+      context "when the diagonal is bottom left to top right" do
+        context "when the marks are 'O's" do
+          let(:game_winner_diag) {described_class.new([1,7,9,5,6,3])}
+          before do
+            allow(game_winner_diag).to receive(:puts)
+          end
+
+          it "displays winner" do
+            expect(game_winner_diag).to receive(:puts).with("O wins!")
+            game_winner_diag.winner?
+          end
+          it "returns true" do
+            expect(game_winner_diag).to be_winner
+          end
+        end
+      end
+    end
+
+    context "when the board does not have three consecutive matching marks anywhere" do
+      context "when the board is full" do
+        let(:game_winner_full) {described_class.new([1,5,4,7,3,2,8,6,9])}
+        before do
+          allow(game_winner_full).to receive(:puts)
+        end
+        it "puts 'Draw!'" do
+          expect(game_winner_full).to receive(:puts).with("Draw!")
+          game_winner_full.winner?
+        end
+
+        it "returns true" do
+          expect(game_winner_full).to be_winner
+        end
+      end
+
+      context "when the board is not full" do
+        let(:game_winner_not_full) {described_class.new([1,2,3,4])}
+        it "returns false" do
+          expect(game_winner_not_full).not_to be_winner
         end
       end
     end
