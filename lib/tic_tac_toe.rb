@@ -147,24 +147,15 @@ class TicTacToe
     false
   end
 
-  def check_horizontal_win(board_to_check)
+  def check_horizontal_win(board_to_check = @board)
     winning_arrangement = board_to_check.select do |row|
       all_valid_and_same?(row)
     end
-
     unless winning_arrangement.empty?
       winning_arrangement.flatten!
-      winning_arrangement_index = nil
-
-      board_to_check.each_index do |row|
-        winning_arrangement_index = row if board_to_check[row].all? do |mark|
-          mark == winning_arrangement[0]
-        end
-      end
-
-      return winning_arrangement
+      winning_arrangement = winning_arrangement.first(3)
     end
-    nil
+    return winning_arrangement.empty? ? nil : winning_arrangement
   end
 
   def all_valid_and_same?(arr)
