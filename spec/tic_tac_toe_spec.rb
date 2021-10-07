@@ -485,4 +485,33 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#all_valid_and_same?" do
+    let(:x){"X"}
+    let(:o){"O"}
+    let(:game_valid_same){described_class.new}
+    context "when chars are all valid and same char" do
+      let(:arr_valid_same){[x,x,x]}
+
+      it "returns true" do
+        expect(game_valid_same).to be_all_valid_and_same(arr_valid_same)
+      end
+    end
+
+    context "when chars are all valid, but different chars" do
+      let(:arr_valid_not_same){[x,o,x]}
+
+      it "returns false" do
+        expect(game_valid_same).to_not be_all_valid_and_same(arr_valid_not_same)
+      end
+    end
+
+    context "when chars are not all valid" do
+      let(:arr_not_valid){["M",1,o]}
+
+      it "returns false" do
+        expect(game_valid_same).to_not be_all_valid_and_same(arr_not_valid)
+      end
+    end
+  end
 end
