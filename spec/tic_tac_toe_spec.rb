@@ -514,4 +514,33 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#row_col_flipped_board" do
+    let(:x){"X"}
+    let(:o){"O"}
+    let(:b){" "}
+    context "when the board is empty" do
+      let(:game_flip_empty){described_class.new}
+
+      it "returns flipped board" do
+        expect(game_flip_empty.row_col_flipped_board).to eql([[b,b,b],[b,b,b],[b,b,b]])
+      end
+    end
+
+    context "when the board is partially full" do
+      let(:game_flip_partial){described_class.new([1,2,3,4,5])}
+
+      it "returns flipped board" do
+        expect(game_flip_partial.row_col_flipped_board).to eql([[x,o,b],[o,x,b],[x,b,b]])
+      end
+    end
+
+    context "when the board is full" do
+      let(:game_flip_full){described_class.new([1,2,3,4,5,6,8,7,9])}
+      
+      it "returns flipped board" do
+        expect(game_flip_full.row_col_flipped_board).to eql([[x,o,o],[o,x,x],[x,o,x]])
+      end
+    end
+  end
 end
