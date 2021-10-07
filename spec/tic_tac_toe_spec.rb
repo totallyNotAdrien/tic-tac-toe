@@ -437,4 +437,52 @@ describe TicTacToe do
       end
     end
   end
+
+  describe "#check_horizontal_win" do
+    let(:x){"X"}
+    let(:o){"O"}
+    context "when there is no winner" do
+      let(:game_horiz){described_class.new([1,2,3,4])}
+
+      it "returns nil" do
+        expect(game_horiz.check_horizontal_win).to be_nil
+      end
+    end
+
+    context "when there is a winner(X) in the first row" do
+      let(:game_horiz){described_class.new([1,4,2,5,3])}
+
+      before do
+        allow(game_horiz).to receive(:all_valid_and_same?).and_return(true,false,false)
+      end
+
+      it "returns ['X','X','X']" do
+        expect(game_horiz.check_horizontal_win).to eql([x,x,x])
+      end
+    end
+
+    context "when there is a winner(O) in the second row" do
+      let(:game_horiz){described_class.new([1,4,7,5,2,6])}
+
+      before do
+        allow(game_horiz).to receive(:all_valid_and_same?).and_return(false,true,false)
+      end
+
+      it "returns ['O','O','O']" do
+        expect(game_horiz.check_horizontal_win).to eql([o,o,o])
+      end
+    end
+
+    context "when there is a winner(X) in the third row" do
+      let(:game_horiz){described_class.new([7,4,8,5,9])}
+
+      before do
+        allow(game_horiz).to receive(:all_valid_and_same?).and_return(false,false,true)
+      end
+
+      it "returns ['X','X','X']" do
+        expect(game_horiz.check_horizontal_win).to eql([x,x,x])
+      end
+    end
+  end
 end
