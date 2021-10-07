@@ -537,9 +537,43 @@ describe TicTacToe do
 
     context "when the board is full" do
       let(:game_flip_full){described_class.new([1,2,3,4,5,6,8,7,9])}
-      
+
       it "returns flipped board" do
         expect(game_flip_full.row_col_flipped_board).to eql([[x,o,o],[o,x,x],[x,o,x]])
+      end
+    end
+  end
+
+  describe "#board_full?" do
+    context "when board is empty" do
+      let(:game_full_empty){described_class.new}
+
+      it "returns false" do
+        expect(game_full_empty).to_not be_board_full
+      end
+    end
+
+    context "when board is partially full" do
+      let(:game_full_partial){described_class.new([1,2,3,4,5])}
+
+      it "returns false" do
+        expect(game_full_partial).to_not be_board_full
+      end
+    end
+
+    context "when board is almost full" do
+      let(:game_full_almost){described_class.new([1,2,3,4,5,6,8,7])}
+
+      it "returns false" do
+        expect(game_full_almost).to_not be_board_full
+      end
+    end
+
+    context "when board is full" do
+      let(:game_full_almost){described_class.new([1,2,3,4,5,6,8,7,9])}
+
+      it "returns true" do
+        expect(game_full_almost).to be_board_full
       end
     end
   end
